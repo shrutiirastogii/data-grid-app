@@ -30,12 +30,32 @@ interface Car {
   Date: string;
 }
 
-export default function DataGridComponent() {
+const DataGridComponent = () => {
   const [rowData, setRowData] = useState<Car[]>([]);
 
   const columnDefs: ColDef[] = [
-    { field: "Brand", headerName: "Brand", width: 150, pinned: "left" },
-    { field: "Model", headerName: "Model", width: 150, pinned: "left" },
+    {
+      headerName: "Car",
+      field: "carName",
+      headerTooltip: "Car Name",
+      valueGetter: (params) =>
+        `${params.data.Brand?.trim()} ${params.data.Model}`,
+      headerStyle: { textAlign: "center" },
+      cellStyle: {
+        padding: "12px 8px",
+        alignItems: "center",
+        display: "flex",
+        fontWeight: "bold",
+        width: "100%",
+        whiteSpace: "nowrap",
+        overflow: "hidden",
+        textOverflow: "ellipsis",
+        textAlign: "left",
+      },
+      pinned: true,
+      width: 250,
+      tooltipField: "Model",
+    },
     { field: "AccelSec", headerName: "Acceleration (sec)" },
     { field: "TopSpeed_KmH", headerName: "Top Speed (Km/h)" },
     { field: "Range_Km", headerName: "Range (Km)" },
@@ -55,6 +75,13 @@ export default function DataGridComponent() {
       width: 150,
       pinned: "right",
       cellRenderer: ActionsRenderer,
+      cellStyle: {
+        padding: "12px 8px",
+        justifyContent: "center",
+        alignItems: "center",
+        display: "flex",
+        fontWeight: "bold",
+      },
     },
   ];
 
@@ -62,12 +89,38 @@ export default function DataGridComponent() {
     axios
       .get("http://localhost:5000/api/cars")
       .then((res) => setRowData(res.data));
-    console.log("Data fetched from server:", rowData);
   }, []);
 
   return (
-    <div className="ag-theme-alpine" style={{ height: 600 }}>
-      <AgGridReact rowData={rowData} columnDefs={columnDefs} pagination />
+    <div style={styles.container}>
+      <div style={styles.gridWrapper} className="ag-theme-alpine">
+        <AgGridReact
+          rowData={rowData}
+          columnDefs={columnDefs}
+          pagination
+          paginationPageSize={15}
+          domLayout="autoHeight"
+          rowHeight={40}
+          headerHeight={50}
+        />
+      </div>
     </div>
   );
-}
+};
+
+const styles: { [key: string]: React.CSSProperties } = {
+  container: {
+    // marginTop: '100px',
+    padding: "0 2rem",
+    fontFamily: "sans-serif",
+  },
+  gridWrapper: {
+    backgroundColor: "#ffffff",
+    padding: "1rem",
+    borderRadius: "15%",
+    boxShadow: "0 2px 6px rgba(0,0,0,0.06)",
+    minHeight: "600px",
+  },
+};
+
+export default DataGridComponent;
