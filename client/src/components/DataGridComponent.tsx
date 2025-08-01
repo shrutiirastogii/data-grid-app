@@ -6,10 +6,13 @@ import axios from "axios";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 
-import { ModuleRegistry } from "ag-grid-community";
-import { AllCommunityModule } from "ag-grid-community";
+import { AllCommunityModule, ModuleRegistry } from "ag-grid-community";
 import ActionsRenderer from "./ActionRenderer";
 ModuleRegistry.registerModules([AllCommunityModule]);
+
+interface DataGridComponentProps {
+  searchTerm: string;
+}
 
 interface Car {
   id: number;
@@ -30,7 +33,7 @@ interface Car {
   Date: string;
 }
 
-const DataGridComponent = () => {
+const DataGridComponent: React.FC<DataGridComponentProps> = () => {
   const [rowData, setRowData] = useState<Car[]>([]);
 
   const columnDefs: ColDef[] = [
@@ -99,7 +102,6 @@ const DataGridComponent = () => {
           columnDefs={columnDefs}
           pagination
           paginationPageSize={15}
-          domLayout="autoHeight"
           rowHeight={40}
           headerHeight={50}
         />
@@ -110,7 +112,6 @@ const DataGridComponent = () => {
 
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
-    // marginTop: '100px',
     padding: "0 2rem",
     fontFamily: "sans-serif",
   },

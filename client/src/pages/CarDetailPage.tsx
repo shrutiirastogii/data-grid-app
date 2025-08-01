@@ -91,41 +91,41 @@ const CarDetailsPage = () => {
 
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
-    padding: "4rem 6rem",
+    padding: "0rem 10rem",
   },
   headerContainer: {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
     flexDirection: "row",
-    marginBottom: "1.5rem",
+    // marginBottom: "1.5rem",
   },
   backButton: {
-    padding: "0.5rem 1rem",
+    padding: "0.7rem 2rem",
     backgroundColor: "#f3f4f6",
-    borderRadius: 6,
+    borderRadius: 25,
     marginBottom: "1rem",
     border: "none",
     cursor: "pointer",
+    fontWeight: 600,
   },
   header: { fontSize: "1.5rem", fontWeight: 600, marginBottom: "1rem" },
   carImage: {
     width: "100%",
-    height: "80%",
+    height: "60%",
     objectFit: "contain",
     borderRadius: 12,
-    marginBottom: "2rem",
+    // marginBottom: "2rem",
   },
   sectionContainer: {
-    marginBottom: "2rem",
+    // marginBottom: "2rem",
   },
   label: { fontSize: "0.85rem", color: "#6b7280" },
-  value: { fontSize: "1rem", marginTop: "0.25rem" },
+  value: { fontSize: "1rem", },
   row: {
     display: "flex",
     flexWrap: "wrap",
-    gap: "2rem",
-    marginBottom: "1.5rem",
+    // gap: "2rem",
   },
 };
 
