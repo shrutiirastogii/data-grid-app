@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { FaFilter, FaSearch } from "react-icons/fa";
 import axios from "axios";
 import { Car } from "../types/car";
+import { COLORS } from "../styles/colors";
 
 interface HeaderProps {
   searchTerm: string;
@@ -86,7 +87,7 @@ const Header: React.FC<HeaderProps> = ({
 
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
-    backgroundColor: "#f9fafb",
+    backgroundColor: COLORS.white,
     fontFamily: "sans-serif",
     position: "fixed" as const,
     top: 0,
@@ -110,7 +111,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   logo: {
     fontSize: "1.25rem",
     fontWeight: "bold",
-    color: "#111827",
+    color: COLORS.black,
     textDecoration: "none",
   },
   searchContainer: {
@@ -122,7 +123,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     flex: 1,
     padding: "0.4rem 0.8rem",
     borderRadius: 6,
-    border: "1px solid #d1d5db",
+    border: `1px solid ${COLORS.grey}`,
     display: "flex",
     alignItems: "center",
   },
@@ -136,7 +137,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   filterContainer: {
     width: "32px",
     height: "32px",
-    backgroundColor: "#d1d5db",
+    backgroundColor: COLORS.grey,
     borderRadius: "10%",
     alignItems: "center",
     padding: "0.2rem",
@@ -144,7 +145,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     display: "flex",
   },
   filterIcon: {
-    color: "#000000ff",
+    color: COLORS.black,
     fontSize: "1.25rem",
     alignSelf: "center",
     cursor: "pointer",

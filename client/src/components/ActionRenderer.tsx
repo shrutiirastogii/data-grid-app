@@ -2,6 +2,7 @@ import axios from "axios";
 import React from "react";
 import { FaEye, FaTrash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { COLORS } from "../styles/colors";
 
 interface ActionRendererProps {
   data: {
@@ -13,15 +14,18 @@ interface ActionRendererProps {
   refreshData: () => void;
 }
 
-const ActionsRenderer: React.FC<ActionRendererProps> = ({ data, refreshData }) => {
+const ActionsRenderer: React.FC<ActionRendererProps> = ({
+  data,
+  refreshData,
+}) => {
   const ViewIcon = FaEye as unknown as React.FC;
   const DeleteIcon = FaTrash as unknown as React.FC;
 
- const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const handleView = () => {
     navigate(`/cars/${data.id}`, {
-      state: { car: data }
+      state: { car: data },
     });
   };
 
@@ -39,10 +43,16 @@ const ActionsRenderer: React.FC<ActionRendererProps> = ({ data, refreshData }) =
 
   return (
     <div style={{ display: "flex", gap: "8px" }}>
-      <span style={{ cursor: "pointer" }} onClick={handleView}>
+      <span
+        style={{ cursor: "pointer", color: COLORS.blue }}
+        onClick={handleView}
+      >
         <ViewIcon />
       </span>
-      <span style={{ cursor: "pointer" }} onClick={handleDelete}>
+      <span
+        style={{ cursor: "pointer", color: COLORS.red }}
+        onClick={handleDelete}
+      >
         <DeleteIcon />
       </span>
     </div>

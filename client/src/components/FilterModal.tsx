@@ -10,6 +10,7 @@ import MenuItem from "@mui/material/MenuItem";
 import TextField from "@mui/material/TextField";
 import { Car } from "../types/car";
 import axios from "axios";
+import { COLORS } from "../styles/colors";
 
 interface FilterModalProps {
   isOpen: boolean;
@@ -231,15 +232,16 @@ const styles: { [key: string]: React.CSSProperties } = {
     justifyContent: "space-between",
     alignItems: "center",
     marginBottom: "1rem",
-    borderBottom: "1px solid #e0e0e0",
+    borderBottom: `1px solid ${COLORS.lightGrey}`,
   },
   header: {
     fontSize: "1.25rem",
     fontWeight: "bold",
   },
   closeButton: {
-    fontSize: 24,
+    fontSize: 34,
     fontWeight: "bold",
+    color: COLORS.red,
   },
   filterValue: {
     marginTop: "0.5rem",

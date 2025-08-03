@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { COLORS } from "../styles/colors";
 
 const CarDetailsPage = () => {
   const location = useLocation();
@@ -32,7 +33,7 @@ const CarDetailsPage = () => {
         alt="Car"
         style={styles.carImage}
       />
-      <section style={styles.sectionContainer}>
+      <section>
         <h2
           style={{ fontSize: "1.25rem", fontWeight: 600, marginBottom: "1rem" }}
         >
@@ -49,7 +50,7 @@ const CarDetailsPage = () => {
           </div>
         </div>
       </section>
-      <section style={styles.sectionContainer}>
+      <section>
         <h2
           style={{ fontSize: "1.25rem", fontWeight: 600, marginBottom: "1rem" }}
         >
@@ -74,7 +75,7 @@ const CarDetailsPage = () => {
           </div>
         </div>
       </section>
-      <section style={styles.sectionContainer}>
+      <section>
         <h2
           style={{ fontSize: "1.25rem", fontWeight: 600, marginBottom: "1rem" }}
         >
@@ -98,34 +99,37 @@ const styles: { [key: string]: React.CSSProperties } = {
     justifyContent: "space-between",
     alignItems: "center",
     flexDirection: "row",
-    // marginBottom: "1.5rem",
   },
   backButton: {
     padding: "0.7rem 2rem",
-    backgroundColor: "#f3f4f6",
+    backgroundColor: COLORS.grey2,
     borderRadius: 25,
     marginBottom: "1rem",
     border: "none",
     cursor: "pointer",
     fontWeight: 600,
   },
-  header: { fontSize: "1.5rem", fontWeight: 600, marginBottom: "1rem" },
+  header: {
+    fontSize: "1.5rem",
+    fontWeight: 600,
+    marginBottom: "1rem",
+  },
   carImage: {
     width: "100%",
     height: "60%",
     objectFit: "contain",
     borderRadius: 12,
-    // marginBottom: "2rem",
   },
-  sectionContainer: {
-    // marginBottom: "2rem",
+  label: {
+    fontSize: "0.85rem",
+    color: COLORS.darkGrey,
   },
-  label: { fontSize: "0.85rem", color: "#6b7280" },
-  value: { fontSize: "1rem", },
+  value: {
+    fontSize: "1rem",
+  },
   row: {
     display: "flex",
     flexWrap: "wrap",
-    // gap: "2rem",
   },
 };
 

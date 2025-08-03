@@ -10,6 +10,7 @@ import { ModuleRegistry } from "ag-grid-community";
 import { AllCommunityModule } from "ag-grid-community";
 import ActionsRenderer from "./ActionRenderer";
 import { Car } from "../types/car";
+import { COLORS } from "../styles/colors";
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 interface DataGridComponentProps {
@@ -166,12 +167,11 @@ const DataGridComponent: React.FC<DataGridComponentProps> = ({
 
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
-    // marginTop: '100px',
     padding: "0 2rem",
     fontFamily: "sans-serif",
   },
   gridWrapper: {
-    backgroundColor: "#ffffff",
+    backgroundColor: COLORS.white,
     padding: "1rem",
     borderRadius: "15%",
     boxShadow: "0 2px 6px rgba(0,0,0,0.06)",
