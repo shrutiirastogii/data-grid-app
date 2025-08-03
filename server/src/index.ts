@@ -1,8 +1,8 @@
 import express from "express";
 import cors from "cors";
 import { db } from "./db";
-import { Request, Response } from 'express';
-import { ParsedQs } from 'qs';
+import { Request, Response } from "express";
+import { ParsedQs } from "qs";
 
 const app = express();
 app.use(cors());
@@ -41,7 +41,7 @@ app.get("/api/cars/search/:keyword", (req, res) => {
     WHERE LOWER(CONCAT(Brand, ' ', Model)) LIKE ?
   `;
 
-  const searchPattern = keyword + '%';
+  const searchPattern = keyword + "%";
 
   db.query(sql, [searchPattern], (err, results) => {
     if (err) return res.status(500).json({ error: err.message });
@@ -78,29 +78,36 @@ app.delete("/api/cars/:id", async (req, res) => {
   }
 });
 
-
 //filter based on multiple criteria
 app.get(
-  '/api/filtercars/filter',
-  (req: Request<{}, any, any, Record<string, ParsedQs | string | string[]>>, res: Response) => {
-    const columnTypes: Record<string, 'number' | 'string'> = {
-      Range_Km:         'number',
-      TopSpeed_KmH:     'number',
-      AccelSec:         'number',
-      FastCharge_KmH:   'number',
-      Efficiency_WhKm:  'number',
-      RapidCharge:      'string',    
-      PowerTrain:       'string',
+  "/api/filtercars/filter",
+  (
+    req: Request<{}, any, any, Record<string, ParsedQs | string | string[]>>,
+    res: Response
+  ) => {
+    const columnTypes: Record<string, "number" | "string"> = {
+      Range_Km: "number",
+      TopSpeed_KmH: "number",
+      AccelSec: "number",
+      FastCharge_KmH: "number",
+      Efficiency_WhKm: "number",
+      RapidCharge: "string",
+      PowerTrain: "string",
+      PlugType: "string",
+      BodyStyle: "string",
+      Segment: "string",
+      Seats: "number",
+      PriceEuro: "number",
     };
 
     const sqlOps = {
-      equals:     (col: string) => `${col} = ?`,
-      contains:   (col: string) => `${col} LIKE ?`,
+      equals: (col: string) => `${col} = ?`,
+      contains: (col: string) => `${col} LIKE ?`,
       startsWith: (col: string) => `${col} LIKE ?`,
-      endsWith:   (col: string) => `${col} LIKE ?`,
-      isEmpty:    (col: string) => `(${col} IS NULL OR ${col} = '')`,
-      gt:         (col: string) => `${col} > ?`,
-      lt:         (col: string) => `${col} < ?`
+      endsWith: (col: string) => `${col} LIKE ?`,
+      isEmpty: (col: string) => `(${col} IS NULL OR ${col} = '')`,
+      gt: (col: string) => `${col} > ?`,
+      lt: (col: string) => `${col} < ?`,
     } as const;
 
     type Operator = keyof typeof sqlOps;
@@ -109,12 +116,12 @@ app.get(
     const params: (string | number)[] = [];
 
     for (const [key, rawValue] of Object.entries(req.query)) {
-      const idx = key.lastIndexOf('_');
+      const idx = key.lastIndexOf("_");
       if (idx === -1) {
         return res.status(400).json({ error: `Invalid filter: ${key}` });
       }
 
-      const column   = key.slice(0, idx);
+      const column = key.slice(0, idx);
       const operator = key.slice(idx + 1) as Operator;
 
       // 3) validate column & operator
@@ -124,7 +131,7 @@ app.get(
       }
 
       // 4) ban gt/lt on strings
-      if (colType === 'string' && (operator === 'gt' || operator === 'lt')) {
+      if (colType === "string" && (operator === "gt" || operator === "lt")) {
         return res
           .status(400)
           .json({ error: `Operator "${operator}" not allowed on "${column}"` });
@@ -132,30 +139,34 @@ app.get(
 
       // normalize to a single string
       if (rawValue === undefined) {
-        return res.status(400).json({ error: `Missing value for filter: ${key}` });
+        return res
+          .status(400)
+          .json({ error: `Missing value for filter: ${key}` });
       }
       const maybeArr = Array.isArray(rawValue) ? rawValue[0] : rawValue;
-      if (typeof maybeArr !== 'string') {
-        return res.status(400).json({ error: `Invalid value for filter: ${key}` });
+      if (typeof maybeArr !== "string") {
+        return res
+          .status(400)
+          .json({ error: `Invalid value for filter: ${key}` });
       }
       const value = maybeArr;
 
       // build clause + param
       whereClauses.push(sqlOps[operator](column));
-      if (operator === 'isEmpty') continue;
+      if (operator === "isEmpty") continue;
 
       switch (operator) {
-        case 'contains':
+        case "contains":
           params.push(`%${value}%`);
           break;
-        case 'startsWith':
+        case "startsWith":
           params.push(`${value}%`);
           break;
-        case 'endsWith':
+        case "endsWith":
           params.push(`%${value}`);
           break;
-        case 'equals':
-          if (colType === 'number') {
+        case "equals":
+          if (colType === "number") {
             const n = Number(value);
             if (isNaN(n)) {
               return res
@@ -167,9 +178,8 @@ app.get(
             params.push(value);
           }
           break;
-        case 'gt':
-        case 'lt':
-          // only here if colType==='number'
+        case "gt":
+        case "lt":
           const n = Number(value);
           if (isNaN(n)) {
             return res
@@ -181,13 +191,13 @@ app.get(
       }
     }
 
-    let sql = 'SELECT * FROM cars';
+    let sql = "SELECT * FROM cars";
     if (whereClauses.length) {
-      sql += ' WHERE ' + whereClauses.join(' AND ');
+      sql += " WHERE " + whereClauses.join(" AND ");
     }
 
-    console.log('Final SQL:', sql);
-    console.log('With params:', params);
+    console.log("Final SQL:", sql);
+    console.log("With params:", params);
 
     db.query(sql, params, (err, results) => {
       if (err) return res.status(500).json({ error: err.message });

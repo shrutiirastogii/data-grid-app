@@ -15,9 +15,10 @@ ModuleRegistry.registerModules([AllCommunityModule]);
 interface DataGridComponentProps {
   searchTerm: string;
   searchedRowData?: Car[];
+  filteredData?: Car[];
 }
 
-const DataGridComponent: React.FC<DataGridComponentProps> = ({ searchTerm, searchedRowData}) => {
+const DataGridComponent: React.FC<DataGridComponentProps> = ({ searchTerm, searchedRowData, filteredData}) => {
   const [rowData, setRowData] = useState<Car[]>([]);
 
   const columnDefs: ColDef[] = [
@@ -88,6 +89,12 @@ const DataGridComponent: React.FC<DataGridComponentProps> = ({ searchTerm, searc
     setRowData(searchedRowData || []);
   },[searchedRowData])
 
+  useEffect(() => {
+    if (filteredData) {
+      setRowData(filteredData);
+    }
+  }, [filteredData]);
+
   return (
     <div style={styles.container}>
       <div style={styles.gridWrapper} className="ag-theme-alpine">
@@ -95,7 +102,7 @@ const DataGridComponent: React.FC<DataGridComponentProps> = ({ searchTerm, searc
           rowData={rowData}
           columnDefs={columnDefs}
           pagination
-          paginationPageSize={15}
+          paginationPageSize={20}
           domLayout="autoHeight"
           rowHeight={40}
           headerHeight={50}

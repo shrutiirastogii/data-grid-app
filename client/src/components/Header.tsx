@@ -9,20 +9,21 @@ interface HeaderProps {
   searchTerm: string;
   setSearchTerm: (term: string) => void;
   setSearchedRowData: (term: Car[]) => void;
+  setIsFilterModalOpen: (isOpen: boolean) => void;
 }
 const Header: React.FC<HeaderProps> = ({
   searchTerm,
   setSearchTerm,
   setSearchedRowData,
+  setIsFilterModalOpen
 }) => {
   const location = useLocation();
   const FilterIcon = FaFilter as unknown as React.FC;
   const SearchIcon = FaSearch as unknown as React.FC;
   const [isMobile, setIsMobile] = useState(false);
-  const [filter, setFilter] = useState(false);
 
   const handleFilter = () => {
-    setFilter(!filter);
+    setIsFilterModalOpen(true);
   };
 
   const handleSearch = async () => {
@@ -32,6 +33,7 @@ const Header: React.FC<HeaderProps> = ({
         .then((response) => {
           console.log("Search results:", response.data);
           setSearchedRowData(response.data);
+          setSearchTerm("")
         });
     }
   };
@@ -66,7 +68,7 @@ const Header: React.FC<HeaderProps> = ({
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
-              <span onClick={handleSearch} style={{ cursor: "pointer" }}>
+              <span onClick={handleSearch} style={{ cursor: searchTerm.length>0?"pointer" :"cursor-not-allowed" }}>
                 <SearchIcon />
               </span>
             </div>
