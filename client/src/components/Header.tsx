@@ -1,20 +1,39 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
-import { FaFilter } from "react-icons/fa";
+import { FaFilter, FaSearch } from "react-icons/fa";
+import axios from "axios";
+import { Car } from "../types/car";
 
 interface HeaderProps {
   searchTerm: string;
   setSearchTerm: (term: string) => void;
+  setSearchedRowData: (term: Car[]) => void;
 }
-const Header: React.FC<HeaderProps> = ({ searchTerm, setSearchTerm }) => {
+const Header: React.FC<HeaderProps> = ({
+  searchTerm,
+  setSearchTerm,
+  setSearchedRowData,
+}) => {
   const location = useLocation();
   const FilterIcon = FaFilter as unknown as React.FC;
+  const SearchIcon = FaSearch as unknown as React.FC;
   const [isMobile, setIsMobile] = useState(false);
   const [filter, setFilter] = useState(false);
 
   const handleFilter = () => {
     setFilter(!filter);
+  };
+
+  const handleSearch = async () => {
+    if (searchTerm.trim() !== "") {
+      await axios
+        .get(`http://localhost:5000/api/cars/search/${searchTerm}`)
+        .then((response) => {
+          console.log("Search results:", response.data);
+          setSearchedRowData(response.data);
+        });
+    }
   };
 
   useEffect(() => {
@@ -39,13 +58,18 @@ const Header: React.FC<HeaderProps> = ({ searchTerm, setSearchTerm }) => {
               ...styles.searchContainer,
             }}
           >
-            <input
-              type="text"
-              placeholder="Search"
-              style={styles.searchBar}
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
+            <div style={styles.searchBarContainer}>
+              <input
+                type="text"
+                placeholder="Search"
+                style={styles.searchBar}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+              <span onClick={handleSearch} style={{ cursor: "pointer" }}>
+                <SearchIcon />
+              </span>
+            </div>
             <div style={styles.filterContainer}>
               <span onClick={handleFilter} style={styles.filterIcon}>
                 <FilterIcon />
@@ -92,11 +116,20 @@ const styles: { [key: string]: React.CSSProperties } = {
     gap: "1rem",
     alignItems: "center",
   },
-  searchBar: {
+  searchBarContainer: {
     flex: 1,
     padding: "0.4rem 0.8rem",
     borderRadius: 6,
     border: "1px solid #d1d5db",
+    display: "flex",
+    alignItems: "center",
+  },
+  searchBar: {
+    width: "100%",
+    border: "none",
+    outline: "none",
+    fontSize: "1rem",
+    color: "#111827",
   },
   filterContainer: {
     width: "32px",

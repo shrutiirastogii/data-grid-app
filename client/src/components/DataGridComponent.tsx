@@ -9,32 +9,15 @@ import "ag-grid-community/styles/ag-theme-alpine.css";
 import { ModuleRegistry } from "ag-grid-community";
 import { AllCommunityModule } from "ag-grid-community";
 import ActionsRenderer from "./ActionRenderer";
+import { Car } from "../types/car";
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 interface DataGridComponentProps {
   searchTerm: string;
+  searchedRowData?: Car[];
 }
 
-interface Car {
-  id: number;
-  Brand: string;
-  Model: string;
-  AccelSec: number;
-  TopSpeed_KmH: number;
-  Range_Km: number;
-  Efficiency_WhKm: number;
-  FastCharge_KmH: number;
-  RapidCharge: string;
-  PowerTrain: string;
-  PlugType: string;
-  BodyStyle: string;
-  Segment: string;
-  Seats: number;
-  PriceEuro: number;
-  Date: string;
-}
-
-const DataGridComponent: React.FC<DataGridComponentProps> = () => {
+const DataGridComponent: React.FC<DataGridComponentProps> = ({ searchTerm, searchedRowData}) => {
   const [rowData, setRowData] = useState<Car[]>([]);
 
   const columnDefs: ColDef[] = [
@@ -100,6 +83,10 @@ const DataGridComponent: React.FC<DataGridComponentProps> = () => {
   useEffect(() => {
     fetchData();
   }, []);
+
+  useEffect(() => {
+    setRowData(searchedRowData || []);
+  },[searchedRowData])
 
   return (
     <div style={styles.container}>
