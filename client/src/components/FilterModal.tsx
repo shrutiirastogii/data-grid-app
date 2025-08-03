@@ -8,16 +8,14 @@ import InputLabel from "@mui/material/InputLabel";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import TextField from "@mui/material/TextField";
-import Grid from "@mui/material/Grid";
 import { Car } from "../types/car";
 import axios from "axios";
-import Header from "./Header";
 
 interface FilterModalProps {
   isOpen: boolean;
   onClose: () => void;
   onApply: (filters: Record<string, string>) => void;
-  setFilteredData: (term: Car[]) => void;
+  setFilteredData: (data: Car[]) => void;
 }
 
 type NumOp = "equals" | "gt" | "lt";
@@ -54,6 +52,8 @@ const stringOps: { label: string; value: StrOp }[] = [
   { label: "is empty", value: "isEmpty" },
 ];
 
+const STORAGE_KEY = "carFilters";
+
 const FilterModal: React.FC<FilterModalProps> = ({
   isOpen,
   onClose,
@@ -63,38 +63,58 @@ const FilterModal: React.FC<FilterModalProps> = ({
   const fields = React.useMemo(
     () =>
       (Object.keys(columnTypes) as (keyof Car)[]).filter(
-        (field) =>
-          field !== "id" &&
-          field !== "Date" &&
-          field !== "Model" &&
-          field !== "Brand"
+        (f) => !["id", "Date", "Brand", "Model"].includes(f)
       ),
     []
   );
 
   const initialFilters = React.useMemo(() => {
-    const obj: Record<keyof Car, { op: NumOp | StrOp; value: string }> =
-      {} as any;
-    fields.forEach((key) => {
-      obj[key] = {
-        op: columnTypes[key] === "number" ? "equals" : "contains",
+    const obj = {} as Record<keyof Car, { op: NumOp | StrOp; value: string }>;
+    fields.forEach((f) => {
+      obj[f] = {
+        op: columnTypes[f] === "number" ? "equals" : "contains",
         value: "",
       };
     });
     return obj;
   }, [fields]);
 
-  const [filters, setFilters] = React.useState(initialFilters);
+  const [filters, setFilters] = React.useState<
+    Record<keyof Car, { op: NumOp | StrOp; value: string }>
+  >(() => {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      try {
+        return JSON.parse(raw);
+      } catch {
+        console.error(
+          "Failed to parse filters from localStorage, using defaults."
+        );
+        return initialFilters;
+      }
+    }
+    return initialFilters;
+  });
+
+  React.useEffect(() => {
+    if (isOpen) {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        try {
+          setFilters(JSON.parse(raw));
+        } catch {
+          setFilters(initialFilters);
+        }
+      }
+    }
+  }, [initialFilters, isOpen]);
 
   const handleFieldChange = (
     field: keyof Car,
     op: NumOp | StrOp,
     value: string
   ) => {
-    setFilters((prev) => ({
-      ...prev,
-      [field]: { op, value },
-    }));
+    setFilters((prev) => ({ ...prev, [field]: { op, value } }));
   };
 
   const handleApply = () => {
@@ -107,18 +127,18 @@ const FilterModal: React.FC<FilterModalProps> = ({
       }
     });
 
-    const queryString = new URLSearchParams(params).toString();
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(filters));
 
+    const queryString = new URLSearchParams(params).toString();
     const url = `http://localhost:5000/api/filtercars/filter?${queryString}`;
     axios
-      .get(url)
+      .get<Car[]>(url)
       .then((response) => {
-        console.log("Filter results:", response.data);
         setFilteredData(response.data);
+        onApply(params);
       })
-      .catch((error) => {
-        console.error("Error fetching filtered data:", error);
-      });
+      .catch((error) => console.error(error));
+
     onClose();
   };
 
@@ -126,105 +146,62 @@ const FilterModal: React.FC<FilterModalProps> = ({
     <Modal open={isOpen} onClose={onClose} aria-labelledby="filter-modal-title">
       <Box sx={styles.container}>
         <Box sx={styles.headerContainer}>
-          <Typography style={styles.header}>Filter Cars</Typography>
+          <Typography sx={styles.header}>Filter Cars</Typography>
           <Button onClick={onClose}>
             <span style={styles.closeButton}>&times;</span>
           </Button>
         </Box>
-        <Grid container spacing={2}>
-          {fields
-            .filter((field) => columnTypes[field] === "string")
-            .map((field) => (
-              <Box
-                sx={{
-                  flex: "1 1 calc(50% - 16px)",
-                  minWidth: 0,
-                }}
-              >
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: "repeat(2, 1fr)",
+            gap: 2,
+            mb: 2,
+          }}
+        >
+          {fields.map((field) => {
+            const isNum = columnTypes[field] === "number";
+            const ops = isNum ? numericOps : stringOps;
+            const { op, value } = filters[field];
+
+            return (
+              <Box key={field}>
                 <FormControl fullWidth size="small">
                   <InputLabel>{field}</InputLabel>
                   <Select
                     label={field}
-                    value={filters[field].op}
+                    value={op}
                     onChange={(e) =>
-                      handleFieldChange(
-                        field,
-                        e.target.value as StrOp,
-                        filters[field].value
-                      )
+                      handleFieldChange(field, e.target.value as any, value)
                     }
                   >
-                    {stringOps.map((op) => (
-                      <MenuItem key={op.value} value={op.value}>
-                        {op.label}
+                    {ops.map((o) => (
+                      <MenuItem key={o.value} value={o.value}>
+                        {o.label}
                       </MenuItem>
                     ))}
                   </Select>
                 </FormControl>
-                {filters[field].op !== "isEmpty" && (
+                {op !== "isEmpty" && (
                   <TextField
-                    type="text"
+                    fullWidth
+                    type={isNum ? "number" : "text"}
                     variant="outlined"
                     size="small"
                     placeholder="Value"
-                    value={filters[field].value}
+                    value={value}
                     onChange={(e) =>
-                      handleFieldChange(
-                        field,
-                        filters[field].op,
-                        e.target.value
-                      )
+                      handleFieldChange(field, op, e.target.value)
                     }
                     sx={styles.filterValue}
                   />
                 )}
               </Box>
-            ))}
-          {fields
-            .filter((field) => columnTypes[field] === "number")
-            .map((field) => (
-              <Box
-                sx={{
-                  flex: "1 1 calc(50% - 16px)",
-                  minWidth: 0,
-                }}
-              >
-                <FormControl fullWidth size="small">
-                  <InputLabel>{field}</InputLabel>
-                  <Select
-                    label={field}
-                    value={filters[field].op}
-                    onChange={(e) =>
-                      handleFieldChange(
-                        field,
-                        e.target.value as NumOp,
-                        filters[field].value
-                      )
-                    }
-                  >
-                    {numericOps.map((op) => (
-                      <MenuItem key={op.value} value={op.value}>
-                        {op.label}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-                <TextField
-                  fullWidth
-                  type="number"
-                  variant="outlined"
-                  size="small"
-                  placeholder="Value"
-                  value={filters[field].value}
-                  onChange={(e) =>
-                    handleFieldChange(field, filters[field].op, e.target.value)
-                  }
-                  sx={styles.filterValue}
-                />
-              </Box>
-            ))}
-        </Grid>
-        <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 3 }}>
+            );
+          })}
+        </Box>
+
+        <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 1 }}>
           <Button onClick={onClose} sx={{ mr: 1 }}>
             Cancel
           </Button>
@@ -253,7 +230,6 @@ const styles: { [key: string]: React.CSSProperties } = {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    flexDirection: "row",
     marginBottom: "1rem",
     borderBottom: "1px solid #e0e0e0",
   },
@@ -266,8 +242,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     fontWeight: "bold",
   },
   filterValue: {
-    marginTop: 1,
-    width: "100%",
+    marginTop: "0.5rem",
   },
 };
 

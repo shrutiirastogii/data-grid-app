@@ -18,7 +18,11 @@ interface DataGridComponentProps {
   filteredData?: Car[];
 }
 
-const DataGridComponent: React.FC<DataGridComponentProps> = ({ searchTerm, searchedRowData, filteredData}) => {
+const DataGridComponent: React.FC<DataGridComponentProps> = ({
+  searchTerm,
+  searchedRowData,
+  filteredData,
+}) => {
   const [rowData, setRowData] = useState<Car[]>([]);
 
   const columnDefs: ColDef[] = [
@@ -33,30 +37,78 @@ const DataGridComponent: React.FC<DataGridComponentProps> = ({ searchTerm, searc
         padding: "12px 8px",
         alignItems: "center",
         display: "flex",
-        fontWeight: "bold",
+        fontWeight: "500",
         width: "100%",
         whiteSpace: "nowrap",
         overflow: "hidden",
         textOverflow: "ellipsis",
         textAlign: "left",
+        flex: "1 1 0",
+        minWidth: 0,
       },
       pinned: true,
       width: 250,
-      tooltipField: "Model",
+      tooltipField: "Car",
+      flex: 1,
+      minWidth: 100,
     },
-    { field: "AccelSec", headerName: "Acceleration (sec)" },
-    { field: "TopSpeed_KmH", headerName: "Top Speed (Km/h)" },
-    { field: "Range_Km", headerName: "Range (Km)" },
-    { field: "Efficiency_WhKm", headerName: "Efficiency (Wh/Km)" },
-    { field: "FastCharge_KmH", headerName: "Fast Charge (Km/h)" },
-    { field: "RapidCharge", headerName: "Rapid Charge" },
-    { field: "PowerTrain", headerName: "Power Train" },
-    { field: "PlugType", headerName: "Plug Type" },
-    { field: "BodyStyle", headerName: "Body Style" },
-    { field: "Segment", headerName: "Segment" },
-    { field: "Seats", headerName: "Seats" },
-    { field: "PriceEuro", headerName: "Price (Euro)" },
-    { field: "Date", headerName: "Date" },
+    {
+      field: "AccelSec",
+      headerName: "Acceleration (sec)",
+      cellStyle: { ...styles.cellStyle },
+    },
+    {
+      field: "TopSpeed_KmH",
+      headerName: "Top Speed (Km/h)",
+      cellStyle: { ...styles.cellStyle },
+    },
+    {
+      field: "Range_Km",
+      headerName: "Range (Km)",
+      cellStyle: { ...styles.cellStyle },
+    },
+    {
+      field: "Efficiency_WhKm",
+      headerName: "Efficiency (Wh/Km)",
+      cellStyle: { ...styles.cellStyle },
+    },
+    {
+      field: "FastCharge_KmH",
+      headerName: "Fast Charge (Km/h)",
+      cellStyle: { ...styles.cellStyle },
+    },
+    {
+      field: "RapidCharge",
+      headerName: "Rapid Charge",
+      cellStyle: { ...styles.cellStyle },
+    },
+    {
+      field: "PowerTrain",
+      headerName: "Power Train",
+      cellStyle: { ...styles.cellStyle },
+    },
+    {
+      field: "PlugType",
+      headerName: "Plug Type",
+      cellStyle: { ...styles.cellStyle },
+    },
+    {
+      field: "BodyStyle",
+      headerName: "Body Style",
+      cellStyle: { ...styles.cellStyle },
+    },
+    {
+      field: "Segment",
+      headerName: "Segment",
+      cellStyle: { ...styles.cellStyle },
+    },
+    { field: "Seats", headerName: "Seats", cellStyle: { ...styles.cellStyle } },
+    {
+      field: "PriceEuro",
+      headerName: "Price (Euro)",
+      cellStyle: { ...styles.cellStyle },
+    },
+    { field: "Date", headerName: "Date", cellStyle: { ...styles.cellStyle } },
     {
       field: "Actions",
       headerName: "Actions",
@@ -87,7 +139,7 @@ const DataGridComponent: React.FC<DataGridComponentProps> = ({ searchTerm, searc
 
   useEffect(() => {
     setRowData(searchedRowData || []);
-  },[searchedRowData])
+  }, [searchedRowData]);
 
   useEffect(() => {
     if (filteredData) {
@@ -124,6 +176,12 @@ const styles: { [key: string]: React.CSSProperties } = {
     borderRadius: "15%",
     boxShadow: "0 2px 6px rgba(0,0,0,0.06)",
     minHeight: "600px",
+  },
+  cellStyle: {
+    textAlign: "center",
+    alignItems: "center",
+    justifyContent: "center",
+    display: "flex",
   },
 };
 
