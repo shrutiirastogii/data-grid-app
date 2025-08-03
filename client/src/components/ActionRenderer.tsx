@@ -1,21 +1,40 @@
+import axios from "axios";
 import React from "react";
 import { FaEye, FaTrash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
-const ActionsRenderer = (props: any) => {
+interface ActionRendererProps {
+  data: {
+    id: number;
+    Brand: string;
+    Model: string;
+    [key: string]: any;
+  };
+  refreshData: () => void;
+}
+
+const ActionsRenderer: React.FC<ActionRendererProps> = ({ data, refreshData }) => {
   const ViewIcon = FaEye as unknown as React.FC;
   const DeleteIcon = FaTrash as unknown as React.FC;
 
  const navigate = useNavigate();
 
   const handleView = () => {
-    navigate(`/cars/${props.data.id}`, {
-      state: { car: props.data }
+    navigate(`/cars/${data.id}`, {
+      state: { car: data }
     });
   };
 
-  const handleDelete = () => {
-    console.log("Delete action for car ID:", props.data.id);
+  const handleDelete = async () => {
+    if (window.confirm(`Delete ${data.Brand.trim()} ${data.Model}?`)) {
+      try {
+        await axios.delete(`http://localhost:5000/api/cars/${data.id}`);
+        refreshData();
+      } catch (error) {
+        console.error("Delete failed", error);
+        alert("Failed to delete car.");
+      }
+    }
   };
 
   return (

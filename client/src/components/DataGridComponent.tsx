@@ -6,7 +6,8 @@ import axios from "axios";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 
-import { AllCommunityModule, ModuleRegistry } from "ag-grid-community";
+import { ModuleRegistry } from "ag-grid-community";
+import { AllCommunityModule } from "ag-grid-community";
 import ActionsRenderer from "./ActionRenderer";
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -77,7 +78,9 @@ const DataGridComponent: React.FC<DataGridComponentProps> = () => {
       headerName: "Actions",
       width: 150,
       pinned: "right",
-      cellRenderer: ActionsRenderer,
+      cellRenderer: (params: any) => (
+        <ActionsRenderer data={params.data} refreshData={fetchData} />
+      ),
       cellStyle: {
         padding: "12px 8px",
         justifyContent: "center",
@@ -88,10 +91,14 @@ const DataGridComponent: React.FC<DataGridComponentProps> = () => {
     },
   ];
 
-  useEffect(() => {
+  const fetchData = () => {
     axios
       .get("http://localhost:5000/api/cars")
       .then((res) => setRowData(res.data));
+  };
+
+  useEffect(() => {
+    fetchData();
   }, []);
 
   return (
@@ -102,6 +109,7 @@ const DataGridComponent: React.FC<DataGridComponentProps> = () => {
           columnDefs={columnDefs}
           pagination
           paginationPageSize={15}
+          domLayout="autoHeight"
           rowHeight={40}
           headerHeight={50}
         />
@@ -112,6 +120,7 @@ const DataGridComponent: React.FC<DataGridComponentProps> = () => {
 
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
+    // marginTop: '100px',
     padding: "0 2rem",
     fontFamily: "sans-serif",
   },
