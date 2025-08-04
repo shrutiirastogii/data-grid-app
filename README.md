@@ -7,15 +7,13 @@ A full-stack TypeScript project that showcases a **generic, reusable data grid**
 ## 📸 Screenshots
 
 ### 📊 Data Grid View
-![Data Grid](./screensh![alt text](image.png)ots/grid-view.png)
+![Data Grid](./screenshots/grid-view.png)
 
 ### 🔍 Search & Filter
 ![Search Filter](./screenshots/search-filter.png)
 
 ### 📄 Car Detail Page
 ![Detail Page](./screenshots/detail-page.png)
-
-> 📁 Put your images inside a `/screenshots` folder in your repo and update the paths above.
 
 ---
 
@@ -130,19 +128,4 @@ npm start
 
 The app uses a dataset loaded from a CSV into MySQL. You can replace this with your own data by updating the import script or loading manually into the `cars` table.
 
----
-
-## 📽️ Demo Video
-
-> 🔗 Add your video demo link here  
-(YouTube, Loom, or Drive)
-
----
-
-## 📬 Contact
-
-**Author**: Shruti Rastogi
-**Email**: shruti.rastogi2501@gmail.com
-**GitHub**: [@shrutiirastogii](https://github.com/shrutiirastogii)
-**LinkedIn**: [Shruti Rastogi](https://www.linkedin.com/in/shruti-rastogii/)
 ---
