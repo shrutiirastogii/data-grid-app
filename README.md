@@ -1,130 +1,141 @@
-# React DataGrid App with Express API and MySQL
+# 🚘 Data Grid App – React + TypeScript + AG Grid + Express
 
-A full-stack web application that displays tabular data using AG Grid in React. The backend is built with Express (TypeScript), and data is stored in a MySQL database. The app supports search, filtering, and a detail view per entry.
-
----
-
-## 🚀 Tech Stack
-
-- **Frontend**: React (TypeScript), AG Grid, Material UI
-- **Backend**: Express.js (TypeScript)
-- **Database**: MySQL
+A full-stack TypeScript project that showcases a **generic, reusable data grid** using **React**, **AG Grid**, and **Material UI** on the frontend, with an **Express.js + MySQL** backend API supporting dynamic filtering, searching, viewing, and deleting.
 
 ---
 
-## 📁 Project Structure
+## 📸 Screenshots
 
-```bash
+### 📊 Data Grid View
+![Data Grid](./screensh![alt text](image.png)ots/grid-view.png)
+
+### 🔍 Search & Filter
+![Search Filter](./screenshots/search-filter.png)
+
+### 📄 Car Detail Page
+![Detail Page](./screenshots/detail-page.png)
+
+> 📁 Put your images inside a `/screenshots` folder in your repo and update the paths above.
+
+---
+
+## 🚀 Features
+
+✅ Generic Data Grid (any number of columns)  
+✅ Actions: **View**, **Delete**  
+✅ Search cars by keyword  
+✅ Filter data with multiple conditions (e.g. contains, equals, greater than)  
+✅ Detail view page  
+✅ Fully type-safe frontend and backend using TypeScript  
+
+---
+
+## 🧱 Tech Stack
+
+| Layer     | Tech                             |
+|-----------|----------------------------------|
+| Frontend  | React, TypeScript, MUI, AG Grid  |
+| Backend   | Node.js, Express.js, TypeScript  |
+| Database  | MySQL                            |
+
+---
+
+## 🗂️ Project Structure
+
+```
 data-grid-app/
-├── client/                # React frontend
-├── server/                # Express backend
-├── database/              # SQL schema and CSV import
-└── README.md              # This file
+├── client/              # React frontend
+│   └── src/
+│       ├── components/
+│       ├── pages/
+│       ├── services/
+│       └── types/
+├── server/              # Express backend
+│   └── src/
+│       ├── routes/
+│       ├── db/
+│       ├── filters/
+│       └── types/
+├── screenshots/         # UI screenshots for README
 ```
 
 ---
 
-## ✅ Features
+## ⚙️ Setup Instructions
 
-- 📊 Generic AG Grid to display any tabular data
-- 🔍 Server-side search and filtering
-- 👁️ Row-based detail view
-- 🧱 MySQL database integration
-- 💅 MUI for clean styling
-
----
-
-## 🧠 Setup Instructions
-
-Follow these steps to get the project running locally:
-
----
-
-### 1️⃣ Clone the Repository
+### 1. Clone the Repository
 
 ```bash
 git clone https://github.com/shrutiirastogii/data-grid-app.git
 cd data-grid-app
 ```
 
----
+### 2. Install Dependencies
 
-### 2️⃣ Setup MySQL Database
-
-#### 📄 Step 1: Create the schema
-
-Open `database/schema.sql` in MySQL Workbench or terminal and run:
-
-```sql
-CREATE DATABASE IF NOT EXISTS electric_car_data;
-USE electric_car_data;
-
-CREATE TABLE cars (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  Make VARCHAR(100),
-  Model VARCHAR(100),
-  Range_km INT,
-  Battery_kWh FLOAT,
-  Efficiency_WhPerKm FLOAT,
-  Price_EUR INT
-);
-```
-
-#### 📄 Step 2: Import CSV data (optional)
-
-You can import the CSV file manually into the `cars` table using:
-- MySQL Workbench's **Table Data Import Wizard**
-- Or a custom script in `/server/src/importCsv.ts`
-
----
-
-### 3️⃣ Setup the Backend (Express + TypeScript)
-
+#### Frontend
 ```bash
-cd server
+cd client
 npm install
-npx tsc          
-node dist/index.js
 ```
 
-#### 🔑 Environment Variables
+#### Backend
+```bash
+cd ../server
+npm install
+```
 
-Create a `.env` file in `/server`:
+### 3. Environment Configuration
+
+Create a `.env` file in the `/server` folder:
 
 ```
 DB_HOST=localhost
-DB_USER=root
-DB_PASS=your_mysql_password
-DB_NAME=electric_car_data
+DB_USER=your_user
+DB_PASSWORD=your_password
+DB_NAME=your_db
+PORT=5000
 ```
 
-> Make sure the MySQL credentials match your local installation.
+### 4. Start the Project
 
----
+- Start Backend:
+```bash
+cd server
+npm run dev
+```
 
-### 4️⃣ Setup the Frontend (React + TypeScript)
-
+- Start Frontend:
 ```bash
 cd ../client
-npm install
 npm start
 ```
 
-The frontend will start at:  
-➡️ `http://localhost:3000`
+> App will run at `http://localhost:3000` and backend at `http://localhost:5000`.
 
 ---
 
-## 📷 Screenshots
+## 🔌 API Endpoints
+
+| Method | Endpoint                      | Description                   |
+|--------|-------------------------------|-------------------------------|
+| GET    | `/api/cars`                   | Get all cars                  |
+| GET    | `/api/cars/:id`               | Get car by ID                 |
+| GET    | `/api/cars/search/:keyword`   | Search by keyword             |
+| GET    | `/api/filtercars/filter`      | Filter by column & condition  |
+| DELETE | `/api/cars/:id`               | Delete a car by ID            |
 
 ---
 
-## 🛠️ Optional Enhancements
+## 📦 CSV Data
 
-- Add CSV import from UI
-- Add column filtering in frontend
-- Add pagination on backend
-- Dockerize the project for deployment
+The app uses a dataset loaded from a CSV into MySQL. You can replace this with your own data by updating the import script or loading manually into the `cars` table.
+
+---
+
+## 📽️ Demo Video
+
+> 🔗 Add your video demo link here  
+(YouTube, Loom, or Drive)
 
 ---
 
@@ -132,11 +143,6 @@ The frontend will start at:
 
 **Author**: Shruti Rastogi
 **Email**: shruti.rastogi2501@gmail.com
-**GitHub**: [@shrutiirastogii](https://github.com/shrutiirastogii)  
+**GitHub**: [@shrutiirastogii](https://github.com/shrutiirastogii)
 **LinkedIn**: [Shruti Rastogi](https://www.linkedin.com/in/shruti-rastogii/)
-
 ---
-
-## 🏁 Status
-
-✅ MVP functional | 🚧 Enhancements in progress | 📦 Preparing for deployment
